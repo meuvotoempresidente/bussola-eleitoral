@@ -64,6 +64,35 @@
             border-color: var(--accent-color);
         }
         .hidden { display: none !important; }
+        .paywall-box {
+            text-align: center;
+        }
+        .qr-code-img {
+            width: 200px;
+            height: 200px;
+            margin: 15px auto;
+            display: block;
+            border: 4px solid #f1f5f9;
+            border-radius: 8px;
+        }
+        input[readonly] {
+            width: 100%;
+            padding: 10px;
+            font-size: 0.9rem;
+            text-align: center;
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            margin-top: 10px;
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+        .timer-box {
+            font-weight: bold;
+            color: #d97706;
+            margin-top: 15px;
+            font-size: 1.1rem;
+        }
     </style>
 </head>
 <body>
@@ -74,6 +103,22 @@
             <h1>Bússola Eleitoral 2026</h1>
             <p>Descubra sua afinidade política entre os principais pré-candidatos nacionais.</p>
             <div id="questionContainer"></div>
+        </div>
+
+        <!-- TELA DE PAGAMENTO PIX COM CHAVE -->
+        <div id="paywallApp" class="paywall-box hidden">
+            <h2>🔒 Desbloqueie seu Resultado & a Prévia</h2>
+            <p>Você concluiu o quiz! Para revelar o pré-candidato de maior afinidade e ver o <strong>Gráfico de Pizza estatístico</strong>, faça o Pix de contribuição (R$ 1,00):</p>
+            
+            <div id="pixContent">
+                <p>Escaneie o QR Code abaixo com o aplicativo do seu banco:</p>
+                <img class="qr-code-img" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=00020126580014br.gov.bcb.pix0136bussola2026@eleicao.com5204000053039865802BR5925Bussola Eleitoral 20266009Sao Paulo62070503***630489A1" alt="QR Code Pix">
+                
+                <p>Ou clique na chave Pix abaixo para copiar:</p>
+                <input type="text" id="pixKeyInput" value="bussola2026@eleicao.com" readonly onclick="copiarChavePix()">
+                
+                <div id="timerDisplay" class="timer-box hidden">Aguardando confirmação do pagamento... (<span id="countdown">10</span>s)</div>
+            </div>
         </div>
 
         <!-- TELA DE RESULTADOS -->
@@ -114,6 +159,7 @@
 
         let currentQuestion = 0;
         let userAnswers = [];
+        let timerStarted = false;
 
         function loadQuestion() {
             const container = document.getElementById('questionContainer');
@@ -126,7 +172,8 @@
                 html += `</div></div>`;
                 container.innerHTML = html;
             } else {
-                mostrarResultadosDireto();
+                document.getElementById('quizApp').classList.add('hidden');
+                document.getElementById('paywallApp').classList.remove('hidden');
             }
         }
 
@@ -136,8 +183,32 @@
             loadQuestion();
         }
 
-        function mostrarResultadosDireto() {
-            document.getElementById('quizApp').classList.add('hidden');
+        function copiarChavePix() {
+            const input = document.getElementById('pixKeyInput');
+            input.select();
+            input.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(input.value);
+
+            if (!timerStarted) {
+                timerStarted = true;
+                const timerDisplay = document.getElementById('timerDisplay');
+                const countdownSpan = document.getElementById('countdown');
+                timerDisplay.classList.remove('hidden');
+
+                let segundosRestantes = 10;
+                const intervalo = setInterval(() => {
+                    segundosRestantes--;
+                    countdownSpan.innerText = segundosRestantes;
+                    if (segundosRestantes <= 0) {
+                        clearInterval(intervalo);
+                        liberarResultados();
+                    }
+                }, 1000);
+            }
+        }
+
+        function liberarResultados() {
+            document.getElementById('paywallApp').classList.add('hidden');
             document.getElementById('resultsApp').classList.remove('hidden');
 
             document.getElementById('resTitle').innerText = "Alinhamento Social / Desenvolvimentista";
