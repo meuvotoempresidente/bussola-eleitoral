@@ -3,267 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bússola Eleitoral 2026 - Prévia Oficial</title>
+    <title>Bússola Eleitoral 2026</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --primary: #1e3a8a;
-            --primary-light: #3b82f6;
+            --primary-color: #1e3a8a;
+            --accent-color: #3b82f6;
             --bg-color: #f8fafc;
             --card-bg: #ffffff;
             --text-color: #1e293b;
             --text-muted: #64748b;
-            --border: #e2e8f0;
-            --radius: 12px;
         }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-color); color: var(--text-color);
-            margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
-        .container { width: 100%; max-width: 680px; background: var(--card-bg); border-radius: var(--radius); box-shadow: 0 4px 20px rgba(0,0,0,0.05); padding: 30px; box-sizing: border-box; }
-        h1 { color: var(--primary); font-size: 1.5rem; margin-top: 0; text-align: center; }
-        .subtitle { text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; }
-        
-        .welcome-box { background: #f1f5f9; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid var(--primary-light); }
-        .welcome-box h3 { margin-top: 0; color: var(--primary); font-size: 1.05rem; }
-        .welcome-box ul { margin: 8px 0 0 15px; padding: 0; font-size: 0.85rem; color: var(--text-muted); }
-        .welcome-box li { margin-bottom: 5px; }
-
-        .notice-box { background: #eff6ff; border: 1px solid #bfdbfe; padding: 12px 15px; border-radius: 8px; font-size: 0.85rem; color: #1e40af; margin-bottom: 20px; text-align: center; }
-
-        .progress-bar { width: 100%; height: 6px; background: var(--border); border-radius: 3px; margin-bottom: 25px; overflow: hidden; }
-        .progress-fill { height: 100%; background: var(--primary-light); width: 6.6%; transition: width 0.3s ease; }
-        .question-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 15px; }
-        .options-list { display: flex; flex-direction: column; gap: 10px; }
-        .option-label { display: flex; align-items: flex-start; padding: 12px 15px; border: 2px solid var(--border); border-radius: 8px; cursor: pointer; background: #fff; }
-        .option-label:hover { border-color: var(--primary-light); background: #f1f5f9; }
-        .option-label input { margin-top: 3px; margin-right: 12px; accent-color: var(--primary); }
-        .btn-container { display: flex; justify-content: flex-end; margin-top: 25px; }
-        button { background-color: var(--primary); color: white; border: none; padding: 12px 24px; font-size: 1rem; font-weight: 600; border-radius: 8px; cursor: pointer; width: 100%; }
-        button:hover { background-color: #172554; }
-        .result-profile { background: #f8fafc; border-left: 4px solid var(--primary); padding: 20px; margin: 20px 0; text-align: left; border-radius: 0 var(--radius) var(--radius) 0; }
-        .hidden { display: none; }
-        .paywall-box { text-align: center; }
-        .qr-code-img { width: 200px; height: 200px; margin: 15px auto; display: block; }
-        input[type="text"] { width: 80%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; margin-top: 10px; text-align: center; }
-        .chart-container { width: 260px; height: 260px; margin: 15px auto; }
+        .container {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+        h1, h2 {
+            color: var(--primary-color);
+            text-align: center;
+        }
+        p {
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .question-box {
+            margin-bottom: 20px;
+        }
+        .options button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background-color: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+        .options button:hover {
+            background-color: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+        .hidden { display: none !important; }
+        .paywall-box {
+            text-align: center;
+        }
+        .qr-code-img {
+            width: 200px;
+            height: 200px;
+            margin: 15px auto;
+            display: block;
+            border: 4px solid #f1f5f9;
+            border-radius: 8px;
+        }
+        input[readonly] {
+            width: 100%;
+            padding: 10px;
+            font-size: 0.9rem;
+            text-align: center;
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            margin-top: 10px;
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+        .timer-box {
+            font-weight: bold;
+            color: #d97706;
+            margin-top: 15px;
+            font-size: 1.1rem;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h1>Bússola Eleitoral 2026</h1>
-    <div class="subtitle">Descubra sua afinidade política e acompanhe a prévia nacional</div>
-    
-    <!-- TELA INICIAL COM OS 8 PRINCIPAIS NOMES COTADOS NAS PESQUISAS -->
-    <div id="welcomeApp">
-        <div class="welcome-box">
-            <h3>📌 Principais Pré-Candidatos Analisados (Pesquisas Oficiais):</h3>
-            <p style="font-size: 0.88rem; color: var(--text-color); margin-bottom: 8px;">
-                O quiz mapeia o seu grau de afinidade entre os <strong>8 nomes mais cotados e testados</strong> nos levantamentos nacionais de 2026:
-            </p>
-            <ul>
-                <li><strong>Luiz Inácio Lula da Silva</strong> (PT)</li>
-                <li><strong>Flávio Bolsonaro</strong> (PL)</li>
-                <li><strong>Ronaldo Caiado</strong> (PSD)</li>
-                <li><strong>Romeu Zema</strong> (Novo)</li>
-                <li><strong>Renan Santos</strong> (Missão)</li>
-                <li><strong>Samara Martins</strong> (UP)</li>
-                <li><strong>Augusto Cury</strong> (Avante)</li>
-                <li><strong>Rui Costa Pimenta</strong> (PCO)</li>
-            </ul>
+    <div class="container">
+        <!-- TELA DO QUIZ -->
+        <div id="quizApp">
+            <h1>Bússola Eleitoral 2026</h1>
+            <p>Descubra sua afinidade política entre os principais pré-candidatos nacionais.</p>
+            <div id="questionContainer"></div>
         </div>
 
-        <div class="notice-box">
-            ⚡ <strong>Aviso Importante:</strong> Ao concluir as 15 perguntas, para liberar o seu <strong>resultado pessoal detalhado com o candidato compatível</strong> + o <strong>Gráfico de Pizza com o placar estatístico anônimo geral</strong>, será solicitada uma contribuição de apenas <strong>R$ 1,00 via Pix</strong>.
-        </div>
-
-        <button onclick="startQuiz()">Entendi e Quero Começar o Teste</button>
-    </div>
-
-    <div class="progress-bar hidden" id="progressBarContainer"><div class="progress-fill" id="progressFill"></div></div>
-
-    <!-- TELA DO QUIZ -->
-    <div id="quizApp" class="hidden">
-        <div class="question-container" id="questionBox"></div>
-        <div class="btn-container"><button id="nextBtn" onclick="nextQuestion()">Próxima</button></div>
-    </div>
-
-    <!-- TELA DE PAGAMENTO (PAYWALL PIX R$ 1,00) -->
-    <div id="paywallApp" class="paywall-box hidden">
-        <h2>🔒 Desbloqueie seu Resultado & a Prévia</h2>
-        <p>Você concluiu o quiz! Para revelar o pré-candidato de maior afinidade com as suas respostas e <strong>ver o Gráfico de Pizza com os resultados gerais da pesquisa</strong>, realize o Pix de contribuição abaixo:</p>
-        
-        <div id="loadingPix">Gerando seu QR Code Pix de R$ 1,00...</div>
-        <div id="pixContent" class="hidden">
-            <p>Escaneie o QR Code abaixo com o aplicativo do seu banco:</p>
-            <img id="qrCodeImg" class="qr-code-img" src="" alt="QR Code Pix">
-            <p>Ou copie e cole o código Pix:</p>
-            <input type="text" id="copiaEColaInput" readonly onclick="this.select()">
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 15px;">A tela atualizará automaticamente assim que o pagamento for confirmado.</p>
-        </div>
-    </div>
-
-    <!-- TELA DE RESULTADOS E GRÁFICO DE PIZZA -->
-    <div id="resultApp" class="hidden">
-        <h2>Resultado & Prévia Eleitoral</h2>
-        <div class="result-profile" id="profileOutput"></div>
-        
-        <div style="text-align: center; margin-top: 20px;">
-            <h3>📊 Estatísticas Gerais da Pesquisa</h3>
-            <p style="font-size: 0.85rem; color: var(--text-muted);" id="totalParticipantsText"></p>
-            <div class="chart-container">
-                <canvas id="previaChart"></canvas>
+        <!-- TELA DE PAGAMENTO PIX COM CHAVE -->
+        <div id="paywallApp" class="paywall-box hidden">
+            <h2>🔒 Desbloqueie seu Resultado & a Prévia</h2>
+            <p>Você concluiu o quiz! Para revelar o pré-candidato de maior afinidade e ver o <strong>Gráfico de Pizza estatístico</strong>, faça o Pix de contribuição (R$ 1,00):</p>
+            
+            <div id="pixContent">
+                <p>Escaneie o QR Code abaixo com o aplicativo do seu banco:</p>
+                <img class="qr-code-img" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=00020126580014br.gov.bcb.pix0136bussola2026@eleicao.com5204000053039865802BR5925Bussola Eleitoral 20266009Sao Paulo62070503***630489A1" alt="QR Code Pix">
+                
+                <p>Ou clique na chave Pix abaixo para copiar:</p>
+                <input type="text" id="pixKeyInput" value="bussola2026@eleicao.com" readonly onclick="copiarChavePix()">
+                
+                <div id="timerDisplay" class="timer-box hidden">Aguardando confirmação do pagamento... (<span id="countdown">10</span>s)</div>
             </div>
         </div>
 
-        <br>
-        <button onclick="location.reload()">Refazer Teste</button>
-    </div>
-</div>
-
-<script>
-    const rawQuestions = [
-        { title: "1. Papel das empresas estatais:", options: [{ text: "Privatização ampla para atrair investimentos e eficiência.", type: "A" }, { text: "Manutenção de controle público em setores estratégicos.", type: "B" }, { text: "Avaliação técnica caso a caso com parcerias mistas.", type: "C" }] },
-        { title: "2. Legislação econômica e fiscal:", options: [{ text: "Foco rigoroso em corte de gastos e desregulamentação.", type: "A" }, { text: "Valorização de investimentos públicos e progressividade fiscal.", type: "B" }, { text: "Pragmatismo fiscal com foco em reformas estruturais.", type: "C" }] },
-        { title: "3. Programas de transferência de renda:", options: [{ text: "Integração direta com incentivo à empregabilidade.", type: "A" }, { text: "Ampliação da rede de segurança e amparo social.", type: "B" }, { text: "Rigidez de governança e controle tecnológico de fraudes.", type: "C" }] },
-        { title: "4. Diretrizes de gestão administrativa:", options: [{ text: "Enxugamento da máquina pública e autonomia de mercado.", type: "A" }, { text: "Fortalecimento dos serviços públicos e do funcionalismo.", type: "B" }, { text: "Modernização baseada em metas e meritocracia técnica.", type: "C" }] },
-        { title: "5. Abordagem para segurança pública:", options: [{ text: "Endurecimento de marcos legais e rigor punitivo.", type: "A" }, { text: "Integração de inteligência financeira e políticas sociais.", type: "B" }, { text: "Investimento em tecnologia ostensiva e integração policial.", type: "C" }] },
-        { title: "6. Gestão de recursos naturais e ambientais:", options: [{ text: "Desenvolvimento econômico aliado a licenciamentos céleres.", type: "A" }, { text: "Prioridade absoluta à transição verde e proteção de biomas.", type: "B" }, { text: "Equilíbrio regulatório com fiscalização técnica constante.", type: "C" }] },
-        { title: "7. Diretrizes de comércio internacional:", options: [{ text: "Alinhamento preferencial com economias liberais de mercado.", type: "A" }, { text: "Multilateralismo ativo e fortalecimento de blocos regionais.", type: "B" }, { text: "Pragmatismo comercial irrestrito com qualquer nação.", type: "C" }] },
-        { title: "8. Solução de impasses institucionais:", options: [{ text: "Debate público aberto e pressão por reformas estruturais.", type: "A" }, { text: "Defesa estrita da harmonia entre os Poderes.", type: "B" }, { text: "Articulação discreta de bastidores e diálogo institucional.", type: "C" }] },
-        { title: "9. Organização federativa e repasses:", options: [{ text: "Descentralização de recursos e autonomia fiscal local.", type: "A" }, { text: "Coordenação centralizada para redução de desigualdades regionais.", type: "B" }, { text: "Pactos federativos condicionados a metas de desempenho.", type: "C" }] },
-        { title: "10. Foco principal para o ciclo de governo:", options: [{ text: "Ajuste fiscal profundo e desestatização.", type: "A" }, { text: "Retomada industrial e inclusão social.", type: "B" }, { text: "Estabilidade política e reformas pragmáticas consensuais.", type: "C" }] },
-        { title: "11. Investimentos em infraestrutura:", options: [{ text: "Concessões e privatizações em larga escala.", type: "A" }, { text: "Investimento estatal direto planejado.", type: "B" }, { text: "Parcerias público-privadas estritamente reguladas.", type: "C" }] },
-        { title: "12. Diretrizes educacionais prioritárias:", options: [{ text: "Incentivo a modelos de gestão autônomos e meritocráticos.", type: "A" }, { text: "Valorização prioritária da rede pública e ensino superior.", type: "B" }, { text: "Foco robusto em formação técnica e profissionalizante.", type: "C" }] },
-        { title: "13. Estrutura tributária:", options: [{ text: "Simplificação fiscal com desoneração da cadeia produtiva.", type: "A" }, { text: "Progressividade tributária sobre grandes rendas e lucros.", type: "B" }, { text: "Unificação de tributos sem elevação da carga global.", type: "C" }] },
-        { title: "14. Matriz e transição energética:", options: [{ text: "Exploração diversificada com foco em segurança de suprimento.", type: "A" }, { text: "Aceleração imediata rumo a fontes 100% renováveis.", type: "B" }, { text: "Transição gradual equilibrada com a estabilidade econômica.", type: "C" }] },
-        { title: "15. Perfil de liderança executiva preferido:", options: [{ text: "Perfil reformista voltado à desregulação e eficiência.", type: "A" }, { text: "Perfil articulador focado em coalizão social e programática.", type: "B" }, { text: "Perfil técnico focado em entregas gerenciais discretas.", type: "C" }] }
-    ];
-
-    let currentQuestionIndex = 0;
-    let userAnswersRecord = [];
-    let randomizedQuestions = [];
-    let paymentId = null;
-    let checkInterval = null;
-
-    function shuffleArray(array) {
-        let arr = [...array];
-        for (let i = arr.length - 1; i > 0; i--) {
-            let j = Math.floor(Math.random() * (i + 1));
-            [arr[i], arr[j]] = [arr[j], arr[i]];
-        }
-        return arr;
-    }
-
-    function startQuiz() {
-        document.getElementById("welcomeApp").classList.add("hidden");
-        document.getElementById("progressBarContainer").classList.remove("hidden");
-        document.getElementById("quizApp").classList.remove("hidden");
-        
-        currentQuestionIndex = 0;
-        userAnswersRecord = [];
-        randomizedQuestions = rawQuestions.map(q => ({ title: q.title, options: shuffleArray(q.options) }));
-        loadQuestion();
-    }
-
-    function loadQuestion() {
-        const q = randomizedQuestions[currentQuestionIndex];
-        document.getElementById("progressFill").style.width = `${((currentQuestionIndex + 1) / 15) * 100}%`;
-        let html = `<div class="question-title">${q.title}</div><div class="options-list">`;
-        q.options.forEach((opt) => {
-            html += `<label class="option-label"><input type="radio" name="quizOption" value="${opt.type}"><span class="option-text">${opt.text}</span></label>`;
-        });
-        html += `</div>`;
-        document.getElementById("questionBox").innerHTML = html;
-        document.getElementById("nextBtn").innerText = (currentQuestionIndex === 14) ? "Finalizar e Ver Cobrança Pix" : "Próxima";
-    }
-
-    async function nextQuestion() {
-        const selected = document.querySelector('input[name="quizOption"]:checked');
-        if (!selected) { alert("Selecione uma opção."); return; }
-
-        userAnswersRecord.push({ questionIndex: currentQuestionIndex, choice: selected.value });
-        currentQuestionIndex++;
-
-        if (currentQuestionIndex < 15) {
-            loadQuestion();
-        } else {
-            triggerPaywall();
-        }
-    }
-
-    async function triggerPaywall() {
-        document.getElementById("quizApp").classList.add("hidden");
-        document.getElementById("progressBarContainer").classList.add("hidden");
-        document.getElementById("paywallApp").classList.remove("hidden");
-
-        try {
-            const response = await fetch('/api/criar-cobranca', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ answers: userAnswersRecord })
-            });
-            const data = await response.json();
+        <!-- TELA DE RESULTADOS -->
+        <div id="resultsApp" class="hidden">
+            <h1>Seu Resultado</h1>
+            <h2 id="resTitle" style="color: var(--accent-color);"></h2>
+            <p id="resDesc"></p>
+            <p><strong>Candidatos mais alinhados:</strong> <span id="resCandidatos" style="color: var(--primary-color); font-weight: bold;"></span></p>
             
-            paymentId = data.paymentId;
-            document.getElementById("loadingPix").classList.add("hidden");
-            document.getElementById("pixContent").classList.remove("hidden");
-            document.getElementById("qrCodeImg").src = `data:image/jpeg;base64,${data.qrCodeBase64}`;
-            document.getElementById("copiaEColaInput").value = data.copiaECola;
+            <hr style="margin: 20px 0; border: 0; border-top: 1px solid #e2e8f0;">
+            
+            <h2>📊 Prévia Nacional em Tempo Real</h2>
+            <div style="max-width: 300px; margin: 0 auto;">
+                <canvas id="statsChart"></canvas>
+            </div>
+        </div>
+    </div>
 
-            checkInterval = setInterval(checkPaymentStatus, 3000);
-
-        } catch (err) {
-            document.getElementById("loadingPix").innerText = "Erro ao gerar Pix. Tente atualizar a página.";
-        }
-    }
-
-    async function checkPaymentStatus() {
-        if (!paymentId) return;
-        try {
-            const res = await fetch(`/api/checar-status/${paymentId}`);
-            const data = await res.json();
-            if (data.status === "approved") {
-                clearInterval(checkInterval);
-                showResults(data.finalProfile, data.surveyStats);
-            }
-        } catch (e) { console.error(e); }
-    }
-
-    function showResults(profileData, stats) {
-        document.getElementById("paywallApp").classList.add("hidden");
-        document.getElementById("resultApp").classList.remove("hidden");
-        
-        document.getElementById("profileOutput").innerHTML = `
-            <h3>Pré-Candidatos de Maior Afinidade: <span style="color:#2563eb;">${profileData.candidatos}</span></h3>
-            <p><strong>Diretriz Analítica:</strong> ${profileData.title}</p>
-            <p>${profileData.description}</p>
-        `;
-
-        document.getElementById("totalParticipantsText").innerText = `Baseado em ${stats.totalParticipants} participantes que já concluíram a pesquisa.`;
-
-        const ctx = document.getElementById('previaChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: ['Flávio Bolsonaro / Ronaldo Caiado', 'Luiz Inácio Lula da Silva / Samara Martins', 'Romeu Zema / Renan Santos / Augusto Cury / Rui Costa Pimenta'],
-                datasets: [{
-                    data: [stats.rawA, stats.rawB, stats.rawC],
-                    backgroundColor: ['#3b82f6', '#ef4444', '#10b981'],
-                    borderWidth: 1
-                }]
+    <script>
+        const questoes = [
+            {
+                pergunta: "1. Qual deve ser o principal papel do Estado na economia?",
+                opcoes: [
+                    { texto: "Mínimo intervenção, priorizando privatizações e livre mercado.", choice: "A" },
+                    { texto: "Foco em investimentos sociais e forte regulação estatal.", choice: "B" },
+                    { texto: "Governança técnica baseada em dados e reformas estruturais moderadas.", choice: "C" }
+                ]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'bottom' }
-                }
+            {
+                pergunta: "2. Em relação a pautas de costumes e segurança pública:",
+                opcoes: [
+                    { texto: "Rigor absoluto nas leis, defesa da família tradicional e ordem pública.", choice: "A" },
+                    { texto: "Enfoque em direitos sociais, inclusão e políticas humanizadas.", choice: "B" },
+                    { texto: "Equilíbrio institucional com foco em gestão e pragmatismo legal.", choice: "C" }
+                ]
             }
-        });
-    }
-</script>
+        ];
+
+        let currentQuestion = 0;
+        let userAnswers = [];
+        let timerStarted = false;
+
+        function loadQuestion() {
+            const container = document.getElementById('questionContainer');
+            if (currentQuestion < questoes.length) {
+                const q = questoes[currentQuestion];
+                let html = `<div class="question-box"><h3>${q.pergunta}</h3><div class="options">`;
+                q.opcoes.forEach(opt => {
+                    html += `<button onclick="selectAnswer('${opt.choice}')">${opt.texto}</button>`;
+                });
+                html += `</div></div>`;
+                container.innerHTML = html;
+            } else {
+                document.getElementById('quizApp').classList.add('hidden');
+                document.getElementById('paywallApp').classList.remove('hidden');
+            }
+        }
+
+        function selectAnswer(choice) {
+            userAnswers.push({ choice });
+            currentQuestion++;
+            loadQuestion();
+        }
+
+        function copiarChavePix() {
+            const input = document.getElementById('pixKeyInput');
+            input.select();
+            input.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(input.value);
+
+            if (!timerStarted) {
+                timerStarted = true;
+                const timerDisplay = document.getElementById('timerDisplay');
+                const countdownSpan = document.getElementById('countdown');
+                timerDisplay.classList.remove('hidden');
+
+                let segundosRestantes = 10;
+                const intervalo = setInterval(() => {
+                    segundosRestantes--;
+                    countdownSpan.innerText = segundosRestantes;
+                    if (segundosRestantes <= 0) {
+                        clearInterval(intervalo);
+                        liberarResultados();
+                    }
+                }, 1000);
+            }
+        }
+
+        function liberarResultados() {
+            document.getElementById('paywallApp').classList.add('hidden');
+            document.getElementById('resultsApp').classList.remove('hidden');
+
+            document.getElementById('resTitle').innerText = "Alinhamento Social / Desenvolvimentista";
+            document.getElementById('resDesc').innerText = "Você demonstra forte afinidade com políticas voltadas ao bem-estar social e fortalecimento de redes de proteção.";
+            document.getElementById('resCandidatos').innerText = "Luiz Inácio Lula da Silva ou Samara Martins";
+
+            const ctx = document.getElementById('statsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Liberal / Reformista', 'Social / Desenvolvimentista', 'Pragmático / Moderado'],
+                    datasets: [{
+                        data: [35, 45, 20],
+                        backgroundColor: ['#ef4444', '#3b82f6', '#10b981']
+                    }]
+                }
+            });
+        }
+
+        loadQuestion();
+    </script>
 </body>
 </html>
