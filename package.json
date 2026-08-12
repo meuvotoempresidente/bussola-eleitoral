@@ -1,0 +1,13 @@
+{
+  "name": "bussola-eleitoral",
+  "version": "1.0.0",
+  "description": "Bussola Eleitoral 2026",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "mercadopago": "^2.0.8"
+  }
+}
