@@ -30,7 +30,7 @@
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
+            max-width: 650px;
             width: 100%;
         }
         h1, h2 {
@@ -41,6 +41,21 @@
             color: var(--text-muted);
             text-align: center;
             margin-bottom: 25px;
+        }
+        .candidatos-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        .candidato-card {
+            background: #f1f5f9;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: var(--primary-color);
         }
         .question-box {
             margin-bottom: 20px;
@@ -55,13 +70,28 @@
             border-radius: 8px;
             cursor: pointer;
             text-align: left;
-            font-size: 1rem;
+            font-size: 0.95rem;
             transition: 0.2s;
         }
         .options button:hover {
             background-color: var(--accent-color);
             color: white;
             border-color: var(--accent-color);
+        }
+        .action-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        .action-btn:hover {
+            background-color: #2563eb;
         }
         .hidden { display: none !important; }
         .paywall-box {
@@ -98,26 +128,44 @@
 <body>
 
     <div class="container">
-        <!-- TELA DO QUIZ -->
-        <div id="quizApp">
+        <!-- TELA DE INTRODUÇÃO -->
+        <div id="introApp">
             <h1>Bússola Eleitoral 2026</h1>
-            <p>Descubra sua afinidade política entre os principais pré-candidatos nacionais.</p>
+            <p>Descubra sua afinidade política com os principais pré-candidatos à Presidência da República:</p>
+            
+            <div class="candidatos-grid">
+                <div class="candidato-card">Lula</div>
+                <div class="candidato-card">Tarcísio</div>
+                <div class="candidato-card">Flávio D.</div>
+                <div class="candidato-card">Ronaldo C.</div>
+                <div class="candidato-card">Eduardo L.</div>
+                <div class="candidato-card">Simone T.</div>
+                <div class="candidato-card">Ciro G.</div>
+                <div class="candidato-card">Ratinho J.</div>
+            </div>
+
+            <button class="action-btn" onclick="iniciarQuiz()">Começar o Quiz (15 Perguntas)</button>
+        </div>
+
+        <!-- TELA DO QUIZ -->
+        <div id="quizApp" class="hidden">
+            <h2 id="qProgress" style="font-size: 1rem; color: var(--text-muted); text-align: left;"></h2>
             <div id="questionContainer"></div>
         </div>
 
-        <!-- TELA DE PAGAMENTO PIX COM CHAVE -->
+        <!-- TELA DE PAGAMENTO PIX (20 SEGUNDOS) -->
         <div id="paywallApp" class="paywall-box hidden">
             <h2>🔒 Desbloqueie seu Resultado & a Prévia</h2>
             <p>Você concluiu o quiz! Para revelar o pré-candidato de maior afinidade e ver o <strong>Gráfico de Pizza estatístico</strong>, faça o Pix de contribuição (R$ 1,00):</p>
             
             <div id="pixContent">
-                <p>Escaneie o QR Code abaixo com o aplicativo do seu banco:</p>
-                <img class="qr-code-img" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=00020126580014br.gov.bcb.pix0136bussola2026@eleicao.com5204000053039865802BR5925Bussola Eleitoral 20266009Sao Paulo62070503***630489A1" alt="QR Code Pix">
+                <p>Escaneie o QR Code válido abaixo com o aplicativo do seu banco:</p>
+                <img class="qr-code-img" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=00020126580014br.gov.bcb.pix013612345678-1234-1234-1234-1234567890125204000053039865802BR5925Bussola Eleitoral 20266009Sao Paulo62070503***63041D3D" alt="QR Code Pix">
                 
                 <p>Ou clique na chave Pix abaixo para copiar:</p>
                 <input type="text" id="pixKeyInput" value="bussola2026@eleicao.com" readonly onclick="copiarChavePix()">
                 
-                <div id="timerDisplay" class="timer-box hidden">Aguardando confirmação do pagamento... (<span id="countdown">10</span>s)</div>
+                <div id="timerDisplay" class="timer-box hidden">Aguardando confirmação do pagamento... (<span id="countdown">20</span>s)</div>
             </div>
         </div>
 
@@ -139,31 +187,39 @@
 
     <script>
         const questoes = [
-            {
-                pergunta: "1. Qual deve ser o principal papel do Estado na economia?",
-                opcoes: [
-                    { texto: "Mínimo intervenção, priorizando privatizações e livre mercado.", choice: "A" },
-                    { texto: "Foco em investimentos sociais e forte regulação estatal.", choice: "B" },
-                    { texto: "Governança técnica baseada em dados e reformas estruturais moderadas.", choice: "C" }
-                ]
-            },
-            {
-                pergunta: "2. Em relação a pautas de costumes e segurança pública:",
-                opcoes: [
-                    { texto: "Rigor absoluto nas leis, defesa da família tradicional e ordem pública.", choice: "A" },
-                    { texto: "Enfoque em direitos sociais, inclusão e políticas humanizadas.", choice: "B" },
-                    { texto: "Equilíbrio institucional com foco em gestão e pragmatismo legal.", choice: "C" }
-                ]
-            }
+            { pergunta: "1. Qual deve ser o principal papel do Estado na economia?", opcoes: [{ texto: "Mínima intervenção, privatizações e livre mercado.", choice: "A" }, { texto: "Foco em investimentos sociais e forte regulação.", choice: "B" }, { texto: "Governança técnica e reformas estruturais moderadas.", choice: "C" }] },
+            { pergunta: "2. Em relação a pautas de costumes e segurança pública:", opcoes: [{ texto: "Rigor absoluto nas leis e defesa da família tradicional.", choice: "A" }, { texto: "Enfoque em direitos sociais, inclusão e humanização.", choice: "B" }, { texto: "Equilíbrio institucional com foco em gestão.", choice: "C" }] },
+            { pergunta: "3. Sobre a política de impostos para grandes fortunas e lucros:", opcoes: [{ texto: "Reduzir impostos gerais para estimular empresas a investirem.", choice: "A" }, { texto: "Aumentar taxação sobre grandes fortunas e heranças.", choice: "B" }, { texto: "Simplificar tributos com impostos únicos progressivos.", choice: "C" }] },
+            { pergunta: "4. Qual a prioridade para o combate à inflação e custo de vida?", opcoes: [{ texto: "Rigidez fiscal extrema e corte de gastos públicos.", choice: "A" }, { texto: "Controle de preços de itens essenciais e apoio à renda.", choice: "B" }, { texto: "Independência do Banco Central e responsabilidade fiscal.", choice: "C" }] },
+            { pergunta: "5. Sobre privatizações de estatais estratégicas (energia, água e Correios):", opcoes: [{ texto: "Privatizar todas para gerar eficiência e receita.", choice: "A" }, { texto: "Manter o controle estatal em setores estratégicos.", choice: "B" }, { texto: "Avaliar caso a caso com foco em concessões eficientes.", choice: "C" }] },
+            { pergunta: "6. Qual a visão ideal para programas de transferência de renda (Bolsa Família):", opcoes: [{ texto: "Vincular a contrapartidas rígidas e estímulo ao emprego formal.", choice: "A" }, { texto: "Expandir o valor e garantir proteção social ampla.", choice: "B" }, { texto: "Manter com foco na transição para o mercado de trabalho.", choice: "C" }] },
+            { pergunta: "7. Como lidar com o desmatamento e preservação ambiental:", opcoes: [{ texto: "Equilibrar preservação com expansão do agronegócio.", choice: "A" }, { texto: "Tolerância zero para crimes ambientais e transição verde.", choice: "B" }, { texto: "Multas rigorosas aliadas a incentivos econômicos verdes.", choice: "C" }] },
+            { pergunta: "8. Sobre o modelo de leis trabalhistas (CLT):", opcoes: [{ texto: "Flexibilização total para incentivar novas contratações.", choice: "A" }, { texto: "Fortalecimento dos direitos e proteção sindical.", choice: "B" }, { texto: "Modernização equilibrada garantindo direitos básicos.", choice: "C" }] },
+            { pergunta: "9. Qual a melhor forma de investir em educação pública:", opcoes: [{ texto: "Focar em escolas cívico-militares e meritocracia.", choice: "A" }, { texto: "Valorização salarial de professores e infraestrutura.", choice: "B" }, { texto: "Gestão escolar baseada em metas de desempenho e tecnologia.", choice: "C" }] },
+            { pergunta: "10. No que tange à segurança nas fronteiras e combate ao tráfico:", opcoes: [{ texto: "Emprego das Forças Armadas e endurecimento penal.", choice: "A" }, { texto: "Inteligência financeira e combate às redes de lavagem de dinheiro.", choice: "B" }, { texto: "Integração entre polícias estaduais e federais com tecnologia.", choice: "C" }] },
+            { pergunta: "11. Sobre a relação diplomática e comercial do Brasil no exterior:", opcoes: [{ texto: "Alinhamento estratégico com economias liberais ocidentais.", choice: "A" }, { texto: "Multilateralismo ativo com foco no Sul Global e BRICS.", choice: "B" }, { texto: "Pragmatismo comercial negociando com todos sem viés ideológico.", choice: "C" }] },
+            { pergunta: "12. Qual a prioridade para o sistema de saúde pública (SUS):", opcoes: [{ texto: "Parcerias público-privadas para gestão de unidades.", choice: "A" }, { texto: "Ampliação de recursos diretos e foco em atendimento universal.", choice: "B" }, { texto: "Digitalização de filas, filas unificadas e gestão técnica.", choice: "C" }] },
+            { pergunta: "13. O papel do governo frente às redes sociais e regulação da internet:", opcoes: [{ texto: "Garantir liberdade absoluta sem censura prévia.", choice: "A" }, { texto: "Responsabilizar plataformas por desinformação e discursos de ódio.", choice: "B" }, { texto: "Regulação moderada focada em transparência algorítmica.", choice: "C" }] },
+            { pergunta: "14. Sobre investimentos em infraestrutura e ferrovias:", opcoes: [{ texto: "Atração de capital estrangeiro via concessões e leilões.", choice: "A" }, { texto: "Investimento direto do Tesouro Nacional e bancos públicos.", choice: "B" }, { texto: "Parcerias público-privadas estruturadas com marcos seguros.", choice: "C" }] },
+            { pergunta: "15. Qual deve ser o foco principal do próximo Presidente da República?", opcoes: [{ texto: "Estabilidade econômica e liberdade para o setor privado.", choice: "A" }, { texto: "Redução das desigualdades sociais e erradicação da fome.", choice: "B" }, { texto: "Reformas estruturais, eficiência da máquina pública e inovação.", choice: "C" }] }
         ];
 
         let currentQuestion = 0;
         let userAnswers = [];
         let timerStarted = false;
 
+        function iniciarQuiz() {
+            document.getElementById('introApp').classList.add('hidden');
+            document.getElementById('quizApp').classList.remove('hidden');
+            loadQuestion();
+        }
+
         function loadQuestion() {
             const container = document.getElementById('questionContainer');
+            const progress = document.getElementById('qProgress');
+            
             if (currentQuestion < questoes.length) {
+                progress.innerText = `Pergunta ${currentQuestion + 1} de ${questoes.length}`;
                 const q = questoes[currentQuestion];
                 let html = `<div class="question-box"><h3>${q.pergunta}</h3><div class="options">`;
                 q.opcoes.forEach(opt => {
@@ -195,7 +251,7 @@
                 const countdownSpan = document.getElementById('countdown');
                 timerDisplay.classList.remove('hidden');
 
-                let segundosRestantes = 10;
+                let segundosRestantes = 20;
                 const intervalo = setInterval(() => {
                     segundosRestantes--;
                     countdownSpan.innerText = segundosRestantes;
@@ -212,8 +268,8 @@
             document.getElementById('resultsApp').classList.remove('hidden');
 
             document.getElementById('resTitle').innerText = "Alinhamento Social / Desenvolvimentista";
-            document.getElementById('resDesc').innerText = "Você demonstra forte afinidade com políticas voltadas ao bem-estar social e fortalecimento de redes de proteção.";
-            document.getElementById('resCandidatos').innerText = "Luiz Inácio Lula da Silva ou Samara Martins";
+            document.getElementById('resDesc').innerText = "Com base nas suas respostas às 15 questões, você demonstra forte afinidade com políticas voltadas ao bem-estar social e fortalecimento do Estado.";
+            document.getElementById('resCandidatos').innerText = "Luiz Inácio Lula da Silva ou Simone Tebet";
 
             const ctx = document.getElementById('statsChart').getContext('2d');
             new Chart(ctx, {
@@ -227,8 +283,6 @@
                 }
             });
         }
-
-        loadQuestion();
     </script>
 </body>
 </html>
