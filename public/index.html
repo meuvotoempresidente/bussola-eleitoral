@@ -100,7 +100,7 @@
         input[readonly] {
             width: 100%;
             padding: 12px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             text-align: center;
             background: #f1f5f9;
             border: 1px solid #cbd5e1;
@@ -147,14 +147,14 @@
             <div id="questionContainer"></div>
         </div>
 
-        <!-- TELA DE PAGAMENTO PIX (CHAVE + OPCIONAL R$ 5) -->
+        <!-- TELA DE PAGAMENTO PIX -->
         <div id="paywallApp" class="paywall-box hidden">
             <h2>🔒 Desbloqueie seu Resultado & a Prévia</h2>
-            <p>Você concluiu o quiz! Para revelar o pré-candidato de maior afinidade e ver o <strong>Gráfico de Pizza estatístico</strong>, apoie o projeto com um Pix de contribuição (<strong>valor opcional</strong>, sugerimos <strong>R$ 5,00</strong>):</p>
+            <p>Você concluiu o quiz! Para revelar o pré-candidato de maior afinidade e ver o <strong>Gráfico de Pizza com suas respostas</strong>, apoie o projeto com um Pix de contribuição (<strong>valor opcional</strong>, sugerimos <strong>R$ 5,00</strong>):</p>
             
             <div id="pixContent">
                 <p>Clique na chave Pix abaixo para copiar:</p>
-                <input type="text" id="pixKeyInput" value="bussola2026@eleicao.com" readonly onclick="copiarChavePix()">
+                <input type="text" id="pixKeyInput" value="16c21f88-49ae-42b5-8d70-83ca0dcf6693" readonly onclick="copiarChavePix()">
                 
                 <div id="timerDisplay" class="timer-box hidden">Liberando seu resultado... (<span id="countdown">20</span>s)</div>
             </div>
@@ -164,13 +164,13 @@
         <div id="resultsApp" class="hidden">
             <h1>Seu Resultado</h1>
             <h2 id="resTitle" style="color: var(--accent-color);"></h2>
-            <p id="resDesc"></p>
-            <p><strong>Candidatos mais alinhados:</strong> <span id="resCandidatos" style="color: var(--primary-color); font-weight: bold;"></span></p>
+            <p id="resDesc" style="text-align: left; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;"></p>
+            <p><strong>Candidato(s) com maior afinidade:</strong> <span id="resCandidatos" style="color: var(--primary-color); font-weight: bold;"></span></p>
             
             <hr style="margin: 20px 0; border: 0; border-top: 1px solid #e2e8f0;">
             
-            <h2>📊 Prévia Nacional em Tempo Real</h2>
-            <div style="max-width: 300px; margin: 0 auto;">
+            <h2>📊 Estatísticas das suas Respostas</h2>
+            <div style="max-width: 350px; margin: 0 auto;">
                 <canvas id="statsChart"></canvas>
             </div>
         </div>
@@ -205,6 +205,15 @@
             loadQuestion();
         }
 
+        function embaralharArray(array) {
+            let arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
         function loadQuestion() {
             const container = document.getElementById('questionContainer');
             const progress = document.getElementById('qProgress');
@@ -212,8 +221,10 @@
             if (currentQuestion < questoes.length) {
                 progress.innerText = `Pergunta ${currentQuestion + 1} de ${questoes.length}`;
                 const q = questoes[currentQuestion];
+                const opcoesEmbaralhadas = embaralharArray(q.opcoes);
+
                 let html = `<div class="question-box"><h3>${q.pergunta}</h3><div class="options">`;
-                q.opcoes.forEach(opt => {
+                opcoesEmbaralhadas.forEach(opt => {
                     html += `<button onclick="selectAnswer('${opt.choice}')">${opt.texto}</button>`;
                 });
                 html += `</div></div>`;
@@ -225,7 +236,7 @@
         }
 
         function selectAnswer(choice) {
-            userAnswers.push({ choice });
+            userAnswers.push(choice);
             currentQuestion++;
             loadQuestion();
         }
@@ -258,19 +269,57 @@
             document.getElementById('paywallApp').classList.add('hidden');
             document.getElementById('resultsApp').classList.remove('hidden');
 
-            document.getElementById('resTitle').innerText = "Alinhamento Social / Desenvolvimentista";
-            document.getElementById('resDesc').innerText = "Com base nas suas respostas às 15 questões, você demonstra forte afinidade com políticas voltadas ao bem-estar social e fortalecimento do Estado.";
-            document.getElementById('resCandidatos').innerText = "Luiz Inácio Lula da Silva ou Simone Tebet";
+            let countA = userAnswers.filter(ans => ans === 'A').length;
+            let countB = userAnswers.filter(ans => ans === 'B').length;
+            let countC = userAnswers.filter(ans => ans === 'C').length;
+            let total = userAnswers.length;
+
+            let percA = ((countA / total) * 100).toFixed(1);
+            let percB = ((countB / total) * 100).toFixed(1);
+            let percC = ((countC / total) * 100).toFixed(1);
+
+            let titulo = "";
+            let descricao = "";
+            let candidatos = "";
+
+            if (countA >= countB && countA >= countC) {
+                titulo = "Perfil: Liberal / Reformista";
+                candidatos = "Tarcísio de Freitas, Flávio Dino (ou campo liberal/conservador) / Ronaldo Caiado";
+                descricao = `Você obteve ${countA} de ${total} respostas (${percA}%) alinhadas ao bloco <strong>Liberal/Reformista</strong>. Suas escolhas demonstram prioridade pela mínima intervenção do Estado na economia, rigor fiscal, valorização da livre iniciativa e leis mais rígidas para segurança pública.`;
+            } else if (countB >= countA && countB >= countC) {
+                titulo = "Perfil: Social / Desenvolvimentista";
+                candidatos = "Luiz Inácio Lula da Silva / Simone Tebet";
+                descricao = `Você obteve ${countB} de ${total} respostas (${percB}%) alinhadas ao bloco <strong>Social/Desenvolvimentista</strong>. Suas escolhas priorizam fortes investimentos estatais em programas sociais, redução das desigualdades, fortalecimento dos direitos trabalhistas e proteção do SUS.`;
+            } else {
+                titulo = "Perfil: Pragmático / Moderado";
+                candidatos = "Eduardo Leite, Ciro Gomes ou Ratinho Júnior";
+                descricao = `Você obteve ${countC} de ${total} respostas (${percC}%) alinhadas ao bloco <strong>Pragmático/Moderado</strong>. Suas respostas indicam foco em gestão técnica, reformas estruturais equilibradas, pragmatismo econômico e independência institucional.`;
+            }
+
+            document.getElementById('resTitle').innerText = titulo;
+            document.getElementById('resDesc').innerHTML = descricao;
+            document.getElementById('resCandidatos').innerText = candidatos;
 
             const ctx = document.getElementById('statsChart').getContext('2d');
             new Chart(ctx, {
                 type: 'pie',
                 data: {
-                    labels: ['Liberal / Reformista', 'Social / Desenvolvimentista', 'Pragmático / Moderado'],
+                    labels: [
+                        `Liberal/Reformista (${countA} resp. - ${percA}%)`, 
+                        `Social/Desenvolvimentista (${countB} resp. - ${percB}%)`, 
+                        `Pragmático/Moderado (${countC} resp. - ${percC}%)`
+                    ],
                     datasets: [{
-                        data: [35, 45, 20],
+                        data: [countA, countB, countC],
                         backgroundColor: ['#ef4444', '#3b82f6', '#10b981']
                     }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
                 }
             });
         }
