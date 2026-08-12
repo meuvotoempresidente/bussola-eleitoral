@@ -97,18 +97,10 @@
         .paywall-box {
             text-align: center;
         }
-        .qr-code-img {
-            width: 200px;
-            height: 200px;
-            margin: 15px auto;
-            display: block;
-            border: 4px solid #f1f5f9;
-            border-radius: 8px;
-        }
         input[readonly] {
             width: 100%;
-            padding: 10px;
-            font-size: 0.9rem;
+            padding: 12px;
+            font-size: 1rem;
             text-align: center;
             background: #f1f5f9;
             border: 1px solid #cbd5e1;
@@ -116,6 +108,8 @@
             margin-top: 10px;
             box-sizing: border-box;
             cursor: pointer;
+            font-weight: bold;
+            color: var(--primary-color);
         }
         .timer-box {
             font-weight: bold;
@@ -153,19 +147,16 @@
             <div id="questionContainer"></div>
         </div>
 
-        <!-- TELA DE PAGAMENTO PIX (20 SEGUNDOS) -->
+        <!-- TELA DE PAGAMENTO PIX (CHAVE + OPCIONAL R$ 5) -->
         <div id="paywallApp" class="paywall-box hidden">
             <h2>🔒 Desbloqueie seu Resultado & a Prévia</h2>
-            <p>Você concluiu o quiz! Para revelar o pré-candidato de maior afinidade e ver o <strong>Gráfico de Pizza estatístico</strong>, faça o Pix de contribuição (R$ 1,00):</p>
+            <p>Você concluiu o quiz! Para revelar o pré-candidato de maior afinidade e ver o <strong>Gráfico de Pizza estatístico</strong>, apoie o projeto com um Pix de contribuição (<strong>valor opcional</strong>, sugerimos <strong>R$ 5,00</strong>):</p>
             
             <div id="pixContent">
-                <p>Escaneie o QR Code válido abaixo com o aplicativo do seu banco:</p>
-                <img class="qr-code-img" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=00020126580014br.gov.bcb.pix013612345678-1234-1234-1234-1234567890125204000053039865802BR5925Bussola Eleitoral 20266009Sao Paulo62070503***63041D3D" alt="QR Code Pix">
-                
-                <p>Ou clique na chave Pix abaixo para copiar:</p>
+                <p>Clique na chave Pix abaixo para copiar:</p>
                 <input type="text" id="pixKeyInput" value="bussola2026@eleicao.com" readonly onclick="copiarChavePix()">
                 
-                <div id="timerDisplay" class="timer-box hidden">Aguardando confirmação do pagamento... (<span id="countdown">20</span>s)</div>
+                <div id="timerDisplay" class="timer-box hidden">Liberando seu resultado... (<span id="countdown">20</span>s)</div>
             </div>
         </div>
 
