@@ -21,14 +21,18 @@ app.post('/api/criar-cobranca', async (req, res) => {
             payer: { email: 'eleitor@bussola.com' }
         };
         const result = await paymentApi.create({ body });
+        
+        const qrCodeBase64 = result?.point_of_interaction?.transaction_data?.qr_code_base64 || '';
+        const copiaECola = result?.point_of_interaction?.transaction_data?.qr_code || 'Erro ao gerar copia e cola';
+
         dbPendentes.set(String(result.id), answers);
         res.json({
             paymentId: result.id,
-            qrCodeBase64: result.point_of_interaction.transaction_data.qr_code_base64,
-            copiaECola: result.point_of_interaction.transaction_data.qr_code
+            qrCodeBase64: qrCodeBase64,
+            copiaECola: copiaECola
         });
     } catch (error) {
-        console.error(error);
+        console.error("Erro detalhado do Pix:", error);
         res.status(500).json({ error: 'Erro ao gerar Pix' });
     }
 });
